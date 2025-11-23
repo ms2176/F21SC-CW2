@@ -5,7 +5,7 @@ from continent import continent_lookup  # your dictionary of country -> continen
 
 # loading json
 records = []
-with open("issuu_sample.json", "r") as f:
+with open("issuu_cw2.json", "r") as f:
     for line in f:
         line = line.strip()
         if line:
