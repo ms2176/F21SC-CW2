@@ -69,11 +69,18 @@ def also_likes(document_uuid, file_path, sort_func):
 
     sorted_docs = sort_func(doc_counter)
     
-    if not sorted_docs:
-        return "No related documents found for this document."
-    
     return sorted_docs[:10]
 
+def run_task_5d(file_path, document_uuid):
+    top10 = also_likes(document_uuid, file_path, sort_by_shared_readers)
+    if not top10:
+        message = "No related documents found for this document."
+        print(message)  
+        return message
+    print(f"Top 10 also-like documents for {document_uuid}:")
+    for doc in top10:
+        print(doc)
+    return top10
 
 
 if __name__ == "__main__":

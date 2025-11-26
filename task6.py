@@ -1,7 +1,14 @@
 from collections import defaultdict
+import os
+import subprocess
+
 from task5 import return_visitors, return_documents, also_likes, sort_by_shared_readers
 
+
 def generate_dot_graph(input_doc, input_visitor, file_path, sort_func):
+    """
+    Build a DOT graph for the 'also likes' relationship around a given document.
+    """
     visitors = return_visitors(input_doc, file_path)
     also_docs = also_likes(input_doc, file_path, sort_func)
 
@@ -74,20 +81,45 @@ def generate_dot_graph(input_doc, input_visitor, file_path, sort_func):
     dot.append("}")
 
     # Save DOT file
-    with open("also_likes.dot", "w") as f:
+    dot_path = "also_likes.dot"
+    with open(dot_path, "w") as f:
         f.write("\n".join(dot))
 
-    print("DOT file generated: also_likes.dot")
+    print("DOT file generated:", os.path.abspath(dot_path))
+    return dot_path
+
+
+def run_task_6(file_path, document_uuid, visitor_uuid=None):
+    dot_path = generate_dot_graph(
+        document_uuid, visitor_uuid, file_path, sort_by_shared_readers
+    )
+
+    png_path = os.path.splitext(dot_path)[0] + ".png"
+
+    # Try to call Graphviz 'dot' to create a PNG image
+    try:
+        subprocess.run(
+            ["dot", "-Tpng", dot_path, "-o", png_path],
+            check=True,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+        )
+    except Exception as exc:
+        # If conversion fails, surface a clear error to the caller
+        raise RuntimeError(
+            "Failed to convert DOT to PNG. "
+            "Make sure Graphviz is installed and 'dot' is on your PATH."
+        ) from exc
+
+    if not os.path.exists(png_path):
+        raise RuntimeError("PNG file was not created.")
+
+    print("PNG graph generated:", os.path.abspath(png_path))
+    return png_path
 
 
 if __name__ == "__main__":
     file_path = "issuu_cw2.json"
-    # doc_id = "140228202800-6ef39a241f35301a9a42cd0ed21e5fb0"
-    # visitor_id = "2f63e0cca690da91"
     doc_id = "140227140914-9ebad8b641c3754defdd0aa4bdd3aa09"
     visitor_id = "6262b769706ad29d"
-    generate_dot_graph(doc_id, visitor_id, file_path, sort_by_shared_readers)
-    also_docs = also_likes(doc_id, file_path, sort_by_shared_readers)
-    print("Top 10 also-like docs (last 4 chars):")
-    for d in also_docs:
-        print(f"  {d[-4:]}")
+    run_task_6(file_path, doc_id, visitor_id)

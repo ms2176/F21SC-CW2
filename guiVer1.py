@@ -1,10 +1,12 @@
 import tkinter as tk
 from tkinter import filedialog, messagebox, scrolledtext
 import os
-
+from PIL import Image, ImageTk, ImageOps
 from task2 import run_task_2a, run_task_2b
 from task3 import run_task_3a, run_task_3b
 from task4 import run_task_4
+from task5 import run_task_5d
+from task6 import run_task_6
 
 DEFAULT_DATA_FILE = "issuu_cw2.json"
 
@@ -44,8 +46,8 @@ class AnalyticsGUI:
             "3A": run_task_3a,
             "3B": run_task_3b,
             "4": run_task_4,
-            # "5D": run_task_5d,
-            # "6": run_task_6,
+            "5D": run_task_5d,
+            "6": run_task_6
         }
 
         for idx, task_name in enumerate(self.task_map.keys()):
@@ -61,9 +63,12 @@ class AnalyticsGUI:
         output_frame.pack(fill=tk.BOTH, expand=True)
 
         self.output = scrolledtext.ScrolledText(
-            output_frame, wrap=tk.WORD, height=20, width=100
+            output_frame, wrap=tk.WORD, height=10, width=100
         )
         self.output.pack(fill=tk.BOTH, expand=True)
+        # Image display area (for Task 6 graph)
+        self.image_label = tk.Label(output_frame)
+        self.image_label.pack(pady=10)
         self.write_output("Select a task to display results here.\n")
 
     # ---- helpers ---------------------------------------------------------
@@ -73,6 +78,7 @@ class AnalyticsGUI:
         self.output.delete("1.0", tk.END)
         self.output.insert(tk.END, text)
         self.output.configure(state=tk.DISABLED)
+        self.image_label.configure(image='')
 
     def append_output(self, text: str) -> None:
         self.output.configure(state=tk.NORMAL)
@@ -118,7 +124,21 @@ class AnalyticsGUI:
                 return
 
             # Call the task function and capture output if it returns anything
-            result = func(data_file, doc_id, user_id) if task_name in ["5D", "6"] else func(data_file, doc_id)
+            result = func(data_file, doc_id, user_id) if task_name in ["6"] else func(data_file, doc_id)
+            
+            if task_name == "6":
+                if os.path.exists(result):
+                    img = Image.open(result)
+                    max_width, max_height = 700, 350  # tweak these if you want
+                    img = ImageOps.contain(img, (max_width, max_height), Image.LANCZOS)
+                    self.photo = ImageTk.PhotoImage(img)
+
+                    self.write_output(f"Generated Also-Likes Graph:\n{result}\n")
+                    self.image_label.configure(image=self.photo)
+                else:
+                    self.write_output("PNG file not found.\n")
+                return
+            
             if result is not None:
                 self.write_output(str(result))
             else:
