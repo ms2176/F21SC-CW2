@@ -1,9 +1,8 @@
 # task2.py
 from collections import Counter
 from load import load_data
-from continent import continent_lookup
 from histogram import plot_histogram
-
+from continent import continent_lookup
 
 def get_country_counts_2a(file_path, document_uuid):
     return Counter(
@@ -12,14 +11,12 @@ def get_country_counts_2a(file_path, document_uuid):
         if record.get("subject_doc_id") == document_uuid
     )
 
-
 def get_continent_counts_2b(country_counter):
     cont_counter = Counter()
     for country, count in country_counter.items():
         continent = continent_lookup.get(country, "Unknown")
         cont_counter[continent] += count
     return cont_counter
-
 
 def run_task_2a(file_path, document_uuid):
     country_counter = get_country_counts_2a(file_path, document_uuid)
@@ -32,7 +29,6 @@ def run_task_2a(file_path, document_uuid):
         xlabel="Country"
     )
     return True
-
 
 def run_task_2b(file_path, document_uuid):
     country_counter = get_country_counts_2a(file_path, document_uuid)
