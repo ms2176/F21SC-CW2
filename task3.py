@@ -1,23 +1,14 @@
-import json
 from collections import Counter
-import matplotlib.pyplot as plt
-from continent import continent_lookup  # your dictionary of country -> continent
 import re
-from loaddate import records
+from histogram import plot_histogram
+from load import load_data
+
+def count_user_agents(filepath, document_uuid=None):
+    return Counter(r.get("visitor_useragent", "Unknown")
+                   for r in load_data(filepath)
+                   if document_uuid is None or r.get("subject_doc_id") == document_uuid)
 
 
-# histogram taska
-useragents = Counter(r.get("visitor_useragent") for r in records)
-
-plt.figure(figsize=(10, 5))
-plt.bar(useragents.keys(), useragents.values())
-plt.xlabel("User Agent")
-plt.ylabel("Viewer count")
-plt.title(f"Viewer distribution by User Agent")
-plt.xticks(rotation=0)
-plt.show()
-
-#task b
 def get_main_browser(useragent):
     if not useragent:
         return "Unknown"
@@ -25,14 +16,32 @@ def get_main_browser(useragent):
     return match.group(1)
 
 # count main browsers
-main_browsers = Counter(get_main_browser(r.get("visitor_useragent")) for r in records)
+def count_main_browsers(filepath, document_uuid=None):
+    return Counter(get_main_browser(r.get("visitor_useragent")) for r in load_data(filepath)
+                   if document_uuid is None or r.get("subject_doc_id") == document_uuid)
 
-plt.figure(figsize=(10, 5))
-plt.bar(main_browsers.keys(), main_browsers.values())
-plt.xlabel("Browser")
-plt.ylabel("Viewer count")
-plt.title("Viewer distribution by main browser")
-plt.xticks(rotation=45)
-plt.tight_layout()
-plt.show()
 
+def run_task_3a(filepath, document_uuid=None):
+    counter = count_user_agents(filepath, document_uuid)
+    if not counter:
+        return None
+
+    plot_histogram(
+        counter=counter,
+        title="Viewer distribution by user agent" + (f" for {document_uuid}" if document_uuid else ""),
+        xlabel="User Agent"
+    )
+    return True
+
+
+def run_task_3b(filepath, document_uuid=None):
+    counter = count_main_browsers(filepath, document_uuid)
+    if not counter:
+        return None
+
+    plot_histogram(
+        counter=counter,
+        title="Viewer distribution by main browser" + (f" for {document_uuid}" if document_uuid else ""),
+        xlabel="Main Browser"
+    )
+    return True
