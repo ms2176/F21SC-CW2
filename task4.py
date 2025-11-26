@@ -1,21 +1,31 @@
-import json
 from collections import defaultdict
-import matplotlib.pyplot as plt
-from continent import continent_lookup  # your dictionary of country -> continent
-import re
-from loaddate import records
+from load import load_data
 
-user_readtime = defaultdict(int)
 
-for r in records:
-    user = r.get("visitor_uuid")
-    readtime = r.get("event_readtime")
-    if user and readtime:
-        user_readtime[user] += readtime
+def run_task_4(file_path, document_uuid=None, top_n=10):
+    user_readtime = defaultdict(int)
 
-top_readers = sorted(user_readtime.items(), key=lambda x: x[1], reverse=True)[:10]
+    for r in load_data(file_path):
+        if document_uuid is not None and r.get("subject_doc_id") != document_uuid:
+            continue
 
-print("Top 10 readers by total reading time:")
-print("{:<20} {:>10}".format("Visitor UUID", "Total Event Read Time"))
-for user, total_time in top_readers:
-    print(f"{user:<20} {total_time:>10}")
+        user = r.get("visitor_uuid")
+        readtime = r.get("event_readtime")
+
+        if user and readtime:
+            user_readtime[user] += readtime
+
+    top_readers = sorted(user_readtime.items(), key=lambda x: x[1], reverse=True)[:top_n]
+
+    if not top_readers:
+        print("No records found for this document.")
+        return None
+
+    print(f"Top {top_n} readers by total reading time"
+          + (f" for {document_uuid}:" if document_uuid else ":"))
+    print("{:<20} {:>10}".format("Visitor UUID", "Total Read Time"))
+
+    for user, total_time in top_readers:
+        print(f"{user:<20} {total_time:>10}")
+
+    return top_readers
