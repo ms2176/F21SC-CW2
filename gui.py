@@ -10,6 +10,14 @@ from histogram import plot_histogram
 
 FILE_PATH = "issuu_cw2.json"
 
+# gui.py
+import tkinter as tk
+from tkinter import messagebox
+from task2 import run_task_2a, run_task_2b
+
+FILE_PATH = "issuu_cw2.json"
+
+
 def run_task(action):
     doc = doc_entry.get().strip()
 
@@ -17,27 +25,13 @@ def run_task(action):
         messagebox.showerror("Missing Input", "Enter a document UUID.")
         return
 
-    country_counter = get_country_counts_2a(FILE_PATH, doc)
-
-    if not country_counter:
-        messagebox.showinfo("No Data", "No records found for this document.")
-        return
-
     if action == "2A":
-        plot_histogram(
-            counter=country_counter,
-            title=f"Viewer distribution by country for {doc}",
-            xlabel="Country"
-        )
+        result = run_task_2a(FILE_PATH, doc)
+    else:
+        result = run_task_2b(FILE_PATH, doc)
 
-    elif action == "2B":
-        continent_counter = get_continent_counts_2b(country_counter, continent_lookup)
-
-        plot_histogram(
-            counter=continent_counter,
-            title=f"Viewer distribution by continent for {doc}",
-            xlabel="Continent"
-        )
+    if result is None:
+        messagebox.showinfo("No Data", "No records found for this document.")
 
 
 root = tk.Tk()

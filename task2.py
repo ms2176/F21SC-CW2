@@ -1,10 +1,9 @@
-import os
-import sys
-import matplotlib.pyplot as plt
-from load import load_data
+# task2.py
 from collections import Counter
-from continent import continent_lookup 
+from load import load_data
+from continent import continent_lookup
 from histogram import plot_histogram
+
 
 def get_country_counts_2a(file_path, document_uuid):
     return Counter(
@@ -13,36 +12,38 @@ def get_country_counts_2a(file_path, document_uuid):
         if record.get("subject_doc_id") == document_uuid
     )
 
-def get_continent_counts_2b(country_counter, continent_map):
+
+def get_continent_counts_2b(country_counter):
     cont_counter = Counter()
-
     for country, count in country_counter.items():
-        continent = continent_map.get(country, "Unknown")
+        continent = continent_lookup.get(country, "Unknown")
         cont_counter[continent] += count
-
     return cont_counter
 
-if __name__ == "__main__":
 
-    file = "issuu_cw2.json"              
-    doc = input("Enter document UUID: ") 
-
-  
-    country_counter = get_country_counts_2a(file, doc)
+def run_task_2a(file_path, document_uuid):
+    country_counter = get_country_counts_2a(file_path, document_uuid)
     if not country_counter:
-        print("No records found for this document.")
-        exit()
+        return None
 
     plot_histogram(
         counter=country_counter,
-        title=f"Viewer distribution by country for {doc}",
+        title=f"Viewer distribution by country for {document_uuid}",
         xlabel="Country"
     )
-    
-    continent_counter = get_continent_counts_2b(country_counter, continent_lookup)
+    return True
+
+
+def run_task_2b(file_path, document_uuid):
+    country_counter = get_country_counts_2a(file_path, document_uuid)
+    if not country_counter:
+        return None
+
+    continent_counter = get_continent_counts_2b(country_counter)
 
     plot_histogram(
         counter=continent_counter,
-        title=f"Viewer distribution by continent for {doc}",
+        title=f"Viewer distribution by continent for {document_uuid}",
         xlabel="Continent"
     )
+    return True
