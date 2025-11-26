@@ -3,14 +3,8 @@ from collections import Counter
 import matplotlib.pyplot as plt
 from continent import continent_lookup  # your dictionary of country -> continent
 import re
+from loaddate import records
 
-# loading json
-records = []
-with open("issuu_cw2.json", "r") as f:
-    for line in f:
-        line = line.strip()
-        if line:
-            records.append(json.loads(line))
 
 # histogram taska
 useragents = Counter(r.get("visitor_useragent") for r in records)
@@ -41,3 +35,4 @@ plt.title("Viewer distribution by main browser")
 plt.xticks(rotation=45)
 plt.tight_layout()
 plt.show()
+

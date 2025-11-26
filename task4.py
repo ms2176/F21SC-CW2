@@ -3,14 +3,7 @@ from collections import defaultdict
 import matplotlib.pyplot as plt
 from continent import continent_lookup  # your dictionary of country -> continent
 import re
-
-# loading json
-records = []
-with open("issuu_cw2.json", "r") as f:
-    for line in f:
-        line = line.strip()
-        if line:
-            records.append(json.loads(line))
+from loaddate import records
 
 user_readtime = defaultdict(int)
 
