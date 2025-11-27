@@ -20,5 +20,7 @@ def run_task_4(file_path, top_n=10):
 
     for user, total_time in top_readers: # Format each top reader's info
         lines.append("{:<40} {:>15}".format(user, total_time)) # Format each line with user and total read time
-
+        print(f"User: {user}, Total Read Time: {total_time}") # Debug print statement
+        
     return "\n".join(lines) # Return the formatted output as a single string
+
