@@ -8,15 +8,12 @@ from task4 import run_task_4
 from task5 import run_task_5d
 from task6 import run_task_6
 
-DEFAULT_DATA_FILE = "issuu_cw2.json"
-
-
 class AnalyticsGUI:
     def __init__(self, root: tk.Tk) -> None:
         self.root = root
         self.root.title("F21SC CW2 Analytics")
 
-        self.data_file = DEFAULT_DATA_FILE
+        self.data_file = None
 
         # --- Top controls: file + IDs ---
         top_frame = tk.Frame(root, padx=10, pady=10)
@@ -131,13 +128,18 @@ class AnalyticsGUI:
                 return
 
              # Validate inputs based on task and call appropriately
-            if task_name in ["2A", "2B", "3A", "3B", "4", "5D"]:
+            if task_name in ["2A", "2B", "5D"]:
                 try:
                     doc_id = self.require_document_id()
                 except ValueError:
                     return
                 result = func(data_file, doc_id)
-
+            elif task_name == "3A" or task_name == "3B" or task_name == "4":
+                try:
+                    result = func(data_file)
+                except Exception as e:
+                    messagebox.showerror("Load data file", str(e))
+                    return
             elif task_name == "6":
                 try:
                     doc_id = self.require_document_id()
