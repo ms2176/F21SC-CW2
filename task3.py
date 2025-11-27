@@ -31,8 +31,8 @@ def run_task_3a(filepath):
         return f"Error processing file: {filepath}"
     
     if not counter:
-            print(f"No data found for user agents in file: {filepath}")
-            return f"No data found for user agents in file: {filepath}"
+        print(f"No data found for user agents in file: {filepath}")
+        return f"No data found for user agents in file: {filepath}"
 
     plot_histogram(
         counter=counter,

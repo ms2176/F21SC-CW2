@@ -46,7 +46,6 @@ def main(argv=None):
     user = args.user_uuid
     file_path = args.file_name
 
-
     needs_doc = {"2a", "2b","5d", "6", "7"}
     needs_user = {"6", "7"}
     if task in needs_doc and not doc:

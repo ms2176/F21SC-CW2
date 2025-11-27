@@ -17,11 +17,10 @@ def run_task_4(file_path, top_n=10):
     if not user_readtime:
         print(f"No data found for reading times in file: {file_path}")
         return f"No data found for reading times in file: {file_path}"
-        
 
     top_readers = sorted(user_readtime.items(), key=lambda x: x[1], reverse=True)[:top_n] # Sort through users by total read time, then sort by the second item in the tuple (total read time), reverse for descending order and get top N
 
-    lines = [] # Prepare output lines
+    lines = [] # output lines
     lines.append(f"Top {top_n} readers by total reading time") # Header line
     lines.append("{:<40} {:>15}".format("Visitor UUID", "Total Read Time (s)")) # Column headers
 

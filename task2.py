@@ -59,14 +59,3 @@ def run_task_2b(file_path, document_uuid):
         xlabel="Continent"
     )
     return True
-
-# Test runs
-# if __name__ == "__main__":
-#     file_path = "issuu_cw2.json"
-#     doc_id = "140227140914-9ebad8b641c3754defdd0aa4bdd3aa09"
-
-#     print("Running Task 2a...")
-#     run_task_2a(file_path, doc_id)
-
-#     print("Running Task 2b...")
-#     run_task_2b(file_path, doc_id)

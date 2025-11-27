@@ -4,11 +4,8 @@ import subprocess
 
 from task5 import return_visitors, return_documents, also_likes, sort_by_shared_readers
 
-
 def generate_dot_graph(input_doc, input_visitor, file_path, sort_func):
-    """
-    Build a DOT graph for the 'also likes' relationship around a given document.
-    """
+
     visitors = return_visitors(input_doc, file_path)
     also_docs = also_likes(input_doc, file_path, sort_func)
 
@@ -34,13 +31,12 @@ def generate_dot_graph(input_doc, input_visitor, file_path, sort_func):
 
     dot = []
     dot.append("digraph AlsoLikesGraph {")
-    dot.append("  rankdir=TB;")
+    dot.append("rankdir=TB;")
 
     short_doc = input_doc[-4:]
     short_visitor = input_visitor[-4:] if input_visitor else None
 
     # --- NODES ---
-
     # Input document (green circle)
     dot.append(f'  "{short_doc}" [shape=circle, style=filled, fillcolor=lightgreen];')
 
