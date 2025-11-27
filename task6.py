@@ -90,6 +90,17 @@ def generate_dot_graph(input_doc, input_visitor, file_path, sort_func):
 
 
 def run_task_6(file_path, document_uuid, visitor_uuid=None):
+
+    # If a visitor id was supplied, check they actually read the document
+    if visitor_uuid:
+        visitors_of_doc = return_visitors(document_uuid, file_path)
+        if visitor_uuid not in visitors_of_doc:
+            # Visitor did not read this doc — inform caller (GUI prints message)
+            return (
+                f"Visitor {visitor_uuid} does not appear in the reader list for "
+                f"document {document_uuid}. Graph not generated."
+            )
+        
     dot_path = generate_dot_graph(
         document_uuid, visitor_uuid, file_path, sort_by_shared_readers
     )
@@ -118,8 +129,8 @@ def run_task_6(file_path, document_uuid, visitor_uuid=None):
     return png_path
 
 
-if __name__ == "__main__":
-    file_path = "issuu_cw2.json"
-    doc_id = "140227140914-9ebad8b641c3754defdd0aa4bdd3aa09"
-    visitor_id = "6262b769706ad29d"
-    run_task_6(file_path, doc_id, visitor_id)
+# if __name__ == "__main__":
+#     file_path = "issuu_cw2.json"
+#     doc_id = "140227140914-9ebad8b641c3754defdd0aa4bdd3aa09"
+#     visitor_id = "6262b769706ad29d"
+#     run_task_6(file_path, doc_id, visitor_id)

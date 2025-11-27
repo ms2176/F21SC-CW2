@@ -146,20 +146,25 @@ class AnalyticsGUI:
                     return
                 result = func(data_file, doc_id, user_id)
 
-            # Call the task function and capture output if it returns anything
-            result = func(data_file, doc_id, user_id) if task_name in ["6"] else func(data_file, doc_id)
-            
             if task_name == "6":
+                # CASE 1 — `result` is an error message from run_task_6
+                if isinstance(result, str) and not os.path.exists(result):
+                    self.write_output(result + "\n") 
+                    return
+
+                # CASE 2 — A PNG file path exists
                 if os.path.exists(result):
                     img = Image.open(result)
-                    max_width, max_height = 700, 350  # tweak these if you want
+                    max_width, max_height = 700, 350
                     img = ImageOps.contain(img, (max_width, max_height), Image.LANCZOS)
                     self.photo = ImageTk.PhotoImage(img)
 
                     self.write_output(f"Generated Also-Likes Graph:\n{result}\n")
                     self.image_label.configure(image=self.photo)
-                else:
-                    self.write_output("PNG file not found.\n")
+                    return
+
+                # CASE 3 — Should not happen, but safe fallback
+                self.write_output("PNG file not found.\n")
                 return
             
             if result is not None:
