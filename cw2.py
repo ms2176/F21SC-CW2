@@ -8,7 +8,6 @@ from task4 import run_task_4
 from task5 import run_task_5d
 from task6 import run_task_6
 
-
 def parse_args(argv=None):
     parser = argparse.ArgumentParser(
         description="F21SC CW2 command-line interface"
@@ -48,7 +47,7 @@ def main(argv=None):
     file_path = args.file_name
 
 
-    needs_doc = {"2a", "2b", "3a", "3b", "4", "5d", "6", "7"}
+    needs_doc = {"2a", "2b","5d", "6", "7"}
     needs_user = {"6", "7"}
     if task in needs_doc and not doc:
         print("Error: -d / --doc_uuid is required for this task.", file=sys.stderr)
@@ -62,11 +61,11 @@ def main(argv=None):
     elif task == "2b":
         run_task_2b(file_path, doc)
     elif task == "3a":
-        run_task_3a(file_path, doc)
+        run_task_3a(file_path)
     elif task == "3b":
-        run_task_3b(file_path, doc)
+        run_task_3b(file_path)
     elif task == "4":
-        run_task_4(file_path, doc)
+        run_task_4(file_path)
     elif task == "5d":
         run_task_5d(file_path, doc)
     elif task == "6":
