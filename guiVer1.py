@@ -66,7 +66,7 @@ class AnalyticsGUI:
         # Image display area (for Task 6 graph)
         self.image_label = tk.Label(output_frame)
         self.image_label.pack(pady=10)
-        self.write_output("Select a task to display results here.\n")
+        self.write_output("Load the file then select a task to display results here.\n")
 
     # ---- helpers ---------------------------------------------------------
 
@@ -136,10 +136,10 @@ class AnalyticsGUI:
                 result = func(data_file, doc_id)
             elif task_name == "3A" or task_name == "3B" or task_name == "4":
                 try:
-                    result = func(data_file)
-                except Exception as e:
-                    messagebox.showerror("Load data file", str(e))
+                    data_file = self.require_data_file()
+                except ValueError:
                     return
+                result = func(data_file)
             elif task_name == "6":
                 try:
                     doc_id = self.require_document_id()
