@@ -24,9 +24,15 @@ def count_main_browsers(filepath):
 
 # Runs Task 3a: Viewer distribution by user agent histogram
 def run_task_3a(filepath):
-    counter = count_user_agents(filepath)
+    try:
+        counter = count_user_agents(filepath)
+    except Exception:
+        print(f"Error processing file: {filepath}")
+        return f"Error processing file: {filepath}"
+    
     if not counter:
-        return None
+            print(f"No data found for user agents in file: {filepath}")
+            return f"No data found for user agents in file: {filepath}"
 
     plot_histogram(
         counter=counter,
@@ -38,9 +44,15 @@ def run_task_3a(filepath):
 
 # Runs Task 3b: Viewer distribution by main browser histogram
 def run_task_3b(filepath):
-    counter = count_main_browsers(filepath)
+    try:
+        counter = count_main_browsers(filepath)
+    except Exception:
+        print(f"Error processing file: {filepath}")
+        return f"Error processing file: {filepath}"
+
     if not counter:
-        return None
+        print(f"No data found for main browsers in file: {filepath}")
+        return f"No data found for main browsers in file: {filepath}"
 
     plot_histogram(
         counter=counter,

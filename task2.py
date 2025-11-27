@@ -34,7 +34,8 @@ def get_continent_counts_2b(country_counter):
 def run_task_2a(file_path, document_uuid):
     country_counter = get_country_counts_2a(file_path, document_uuid)
     if not country_counter:
-        return None
+        print(f"No data found for document UUID: {document_uuid}")
+        return f"No data found for document UUID: {document_uuid}"
     
     plot_histogram(
         counter=country_counter,
@@ -47,7 +48,8 @@ def run_task_2a(file_path, document_uuid):
 def run_task_2b(file_path, document_uuid):
     country_counter = get_country_counts_2a(file_path, document_uuid)
     if not country_counter:
-        return None
+        print(f"No data found for document UUID: {document_uuid}")
+        return f"No data found for document UUID: {document_uuid}"
 
     continent_counter = get_continent_counts_2b(country_counter)
 
