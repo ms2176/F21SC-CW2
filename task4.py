@@ -1,31 +1,24 @@
 from collections import defaultdict
 from load import load_data
 
+# Runs Task 4: Top N readers by total reading time
+def run_task_4(file_path, top_n=10):
+    user_readtime = defaultdict(int) # Dictionary to accumulate read times per user
 
-def run_task_4(file_path, document_uuid=None, top_n=10):
-    user_readtime = defaultdict(int)
+    for r in load_data(file_path): # Iterate through all records
+        user = r.get("visitor_uuid") # Get visitor UUID
+        readtime = r.get("event_readtime") # Get reading time
 
-    for r in load_data(file_path):
-        if document_uuid is not None and r.get("subject_doc_id") != document_uuid:
-            continue
+        if user and readtime: # Ensure both user and readtime are valid
+            user_readtime[user] += readtime # Accumulate reading time
 
-        user = r.get("visitor_uuid")
-        readtime = r.get("event_readtime")
+    top_readers = sorted(user_readtime.items(), key=lambda x: x[1], reverse=True)[:top_n] # Sort through users by total read time, then sort by the second item in the tuple (total read time), reverse for descending order and get top N
 
-        if user and readtime:
-            user_readtime[user] += readtime
+    lines = [] # Prepare output lines
+    lines.append(f"Top {top_n} readers by total reading time") # Header line
+    lines.append("{:<40} {:>15}".format("Visitor UUID", "Total Read Time (s)")) # Column headers
 
-    top_readers = sorted(user_readtime.items(), key=lambda x: x[1], reverse=True)[:top_n]
+    for user, total_time in top_readers: # Format each top reader's info
+        lines.append("{:<40} {:>15}".format(user, total_time)) # Format each line with user and total read time
 
-    if not top_readers:
-        print("No records found for this document.")
-        return None
-
-    print(f"Top {top_n} readers by total reading time"
-          + (f" for {document_uuid}:" if document_uuid else ":"))
-    print("{:<20} {:>10}".format("Visitor UUID", "Total Read Time"))
-
-    for user, total_time in top_readers:
-        print(f"{user:<20} {total_time:>10}")
-
-    return top_readers
+    return "\n".join(lines) # Return the formatted output as a single string
