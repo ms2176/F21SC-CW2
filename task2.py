@@ -35,7 +35,7 @@ def run_task_2a(file_path, document_uuid):
     country_counter = get_country_counts_2a(file_path, document_uuid)
     if not country_counter:
         return None
-
+    
     plot_histogram(
         counter=country_counter,
         title=f"Viewer distribution by country for {document_uuid}",
