@@ -143,7 +143,7 @@ class AnalyticsGUI:
                 except ValueError:
                     return
                 result = func(data_file, doc_id)
-            elif task_name == "View by User Agent" or task_name == "View by Main Browser" or task_name == "Top Readers":
+            elif task_name in ["View by User Agent","View by Main Browser","Top Readers" ]:
                 try:
                     data_file = self.require_data_file()
                 except ValueError:
@@ -158,7 +158,7 @@ class AnalyticsGUI:
                 result = func(data_file, doc_id, user_id)
 
             if task_name == "Also Like Graph":
-                # CASE 1 — `result` is an error message from run_task_6
+                # CASE 1 — result is an error message from run_task_6
                 if isinstance(result, str) and not os.path.exists(result):
                     self.write_output(result + "\n") 
                     return
