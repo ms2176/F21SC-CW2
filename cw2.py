@@ -48,9 +48,13 @@ def main(argv=None):
     file_path = args.file_name
 
 
-    needs_doc = {"2a", "2b", "3a", "3b", "4", "5d", "6"}
+    needs_doc = {"2a", "2b", "3a", "3b", "4", "5d", "6", "7"}
+    needs_user = {"6", "7"}
     if task in needs_doc and not doc:
         print("Error: -d / --doc_uuid is required for this task.", file=sys.stderr)
+        return 1
+    elif task in needs_user and not user:
+        print("Error: -u / --user_uuid is required for this task.", file=sys.stderr)
         return 1
 
     if task == "2a":
@@ -66,12 +70,6 @@ def main(argv=None):
     elif task == "5d":
         run_task_5d(file_path, doc)
     elif task == "6":
-        if not user:
-            print(
-                "Error: -u / --user_uuid is required for task 6.",
-                file=sys.stderr,
-            )
-            return 1
         png_path = run_task_6(file_path, doc, user)
         print("Also-likes graph PNG generated at:")
         print(png_path)

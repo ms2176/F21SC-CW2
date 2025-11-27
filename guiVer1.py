@@ -101,6 +101,13 @@ class AnalyticsGUI:
             raise ValueError("missing document id")
         return doc
 
+    def require_user_id(self) -> str:
+        user = self.user_entry.get().strip()
+        if not user:
+            messagebox.showwarning("Missing user ID", "Please enter a user ID for this task.")
+            raise ValueError("missing user id")
+        return user
+    
     def require_data_file(self) -> str:
         if not os.path.exists(self.data_file):
             messagebox.showerror(
@@ -113,39 +120,66 @@ class AnalyticsGUI:
     # ---- Task runner -----------------------------------------------------
 
     def run_task(self, task_name: str) -> None:
+        """
+        Validate required inputs for each task, run the task function and display output.
+        Tasks 2A,2B,3A,3B,4,5D require document id.
+        Task 6 requires document id AND user id.
+        """
         try:
             data_file = self.require_data_file()
-            doc_id = self.doc_entry.get().strip()
-            user_id = self.user_entry.get().strip()
             func = self.task_map.get(task_name)
 
             if not func:
                 messagebox.showerror("Error", f"Task {task_name} not implemented.")
                 return
 
-            # Call the task function and capture output if it returns anything
-            result = func(data_file, doc_id, user_id) if task_name in ["6"] else func(data_file, doc_id)
-            
-            if task_name == "6":
-                if os.path.exists(result):
-                    img = Image.open(result)
-                    max_width, max_height = 700, 350  # tweak these if you want
-                    img = ImageOps.contain(img, (max_width, max_height), Image.LANCZOS)
-                    self.photo = ImageTk.PhotoImage(img)
+            # Validate inputs based on task
+            if task_name in ["2A", "2B", "3A", "3B", "4", "5D"]:
+                try:
+                    doc_id = self.require_document_id()
+                except ValueError:
+                    # require_document_id already showed a warning
+                    return
+                # Call function with (file, doc)
+                result = func(data_file, doc_id)
 
-                    self.write_output(f"Generated Also-Likes Graph:\n{result}\n")
-                    self.image_label.configure(image=self.photo)
-                else:
-                    self.write_output("PNG file not found.\n")
-                return
-            
+            elif task_name == "6":
+                # Task 6 needs both document and user
+                try:
+                    doc_id = self.require_document_id()
+                    user_id = self.require_user_id()
+                except ValueError:
+                    return
+                # Call function with (file, doc, user)
+                result = func(data_file, doc_id, user_id)
+
+            # Handle Task 6 image output (PNG path returned)
+            if task_name == "6":
+                if isinstance(result, str) and result.endswith(".png") and os.path.exists(result):
+                    try:
+                        img = Image.open(result)
+                        max_width, max_height = 700, 350  # adjust to taste
+                        img = ImageOps.contain(img, (max_width, max_height), Image.Resampling.LANCZOS)
+                        self.photo = ImageTk.PhotoImage(img)
+                        self.write_output(f"Generated Also-Likes Graph:\n{result}\n")
+                        self.image_label.configure(image=self.photo)
+                    except Exception as img_err:
+                        self.write_output("Failed to load image into GUI.\n")
+                        messagebox.showerror("Image error", str(img_err))
+
+            # Non-image tasks: display returned result (string/list/etc.)
             if result is not None:
                 self.write_output(str(result))
             else:
                 self.write_output(f"Task {task_name} completed.\n")
 
+        except FileNotFoundError:
+            # require_data_file already raised and showed an error
+            return
         except Exception as e:
+            # Generic catch — show in a popup so user notices
             messagebox.showerror("Error", str(e))
+
 
 
 if __name__ == "__main__":
