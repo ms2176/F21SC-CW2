@@ -38,20 +38,20 @@ class AnalyticsGUI:
 
         # Tasks mapping to functions
         self.task_map = {
-            "2A": run_task_2a,
-            "2B": run_task_2b,
-            "3A": run_task_3a,
-            "3B": run_task_3b,
-            "4": run_task_4,
-            "5D": run_task_5d,
-            "6": run_task_6
+            "View by Country - 2a": run_task_2a,
+            "View by Continent - 2b": run_task_2b,
+            "View by User Agent - 3a": run_task_3a,
+            "View by Main Browser - 3b": run_task_3b,
+            "Top Readers - 4": run_task_4,
+            "Task 5D": run_task_5d,
+            "Task 6": run_task_6
         }
 
         for idx, task_name in enumerate(self.task_map.keys()):
             tk.Button(
                 task_frame,
                 text=task_name,
-                width=6,
+                width=20,
                 command=lambda t=task_name: self.run_task(t)
             ).grid(row=1, column=idx, padx=5)
 
@@ -128,19 +128,19 @@ class AnalyticsGUI:
                 return
 
              # Validate inputs based on task and call appropriately
-            if task_name in ["2A", "2B", "5D"]:
+            if task_name in ["View by Country - 2a", "View by Continent - 2b", "Task 5D"]:
                 try:
                     doc_id = self.require_document_id()
                 except ValueError:
                     return
                 result = func(data_file, doc_id)
-            elif task_name == "3A" or task_name == "3B" or task_name == "4":
+            elif task_name == "View by User Agent - 3a" or task_name == "View by Main Browser - 3b" or task_name == "Top Readers - 4":
                 try:
                     data_file = self.require_data_file()
                 except ValueError:
                     return
                 result = func(data_file)
-            elif task_name == "6":
+            elif task_name == "Task 6":
                 try:
                     doc_id = self.require_document_id()
                     user_id = self.require_user_id()
@@ -148,7 +148,7 @@ class AnalyticsGUI:
                     return
                 result = func(data_file, doc_id, user_id)
 
-            if task_name == "6":
+            if task_name == "Task 6":
                 # CASE 1 — `result` is an error message from run_task_6
                 if isinstance(result, str) and not os.path.exists(result):
                     self.write_output(result + "\n") 
