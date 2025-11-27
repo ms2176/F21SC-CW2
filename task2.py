@@ -1,8 +1,7 @@
-# task2.py
 from collections import Counter
 from load import load_data
 from histogram import plot_histogram
-from continent import continent_lookup
+import pycountry_convert as cc
 
 def get_country_counts_2a(file_path, document_uuid):
     return Counter(
@@ -11,10 +10,20 @@ def get_country_counts_2a(file_path, document_uuid):
         if record.get("subject_doc_id") == document_uuid
     )
 
+def get_continent_from_country_2b(country_code):
+    if not country_code or country_code == "Unknown":
+        return "Unknown"
+    try:
+        continent_code = cc.country_alpha2_to_continent_code(country_code)
+        continent_name = cc.convert_continent_code_to_continent_name(continent_code)
+        return continent_name
+    except Exception:
+        return "Unknown"
+
 def get_continent_counts_2b(country_counter):
     cont_counter = Counter()
-    for country, count in country_counter.items():
-        continent = continent_lookup.get(country, "Unknown")
+    for country_code, count in country_counter.items():
+        continent = get_continent_from_country_2b(country_code)
         cont_counter[continent] += count
     return cont_counter
 
