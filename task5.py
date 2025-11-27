@@ -83,11 +83,11 @@ def run_task_5d(file_path, document_uuid):
     return top10
 
 
-if __name__ == "__main__":
-    file_path = "issuu_cw2.json"
-    doc_id = "130810070956-4f21f422b9c8a4ffd5f62fdadf1dbee8"
+# if __name__ == "__main__":
+#     file_path = "issuu_cw2.json"
+#     doc_id = "130810070956-4f21f422b9c8a4ffd5f62fdadf1dbee8"
 
-    top10 = also_likes(doc_id, file_path, sort_by_shared_readers)
-    print(top10)
+#     top10 = also_likes(doc_id, file_path, sort_by_shared_readers)
+#     print(top10)
      
    

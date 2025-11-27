@@ -129,8 +129,8 @@ def run_task_6(file_path, document_uuid, visitor_uuid=None):
     return png_path
 
 
-if __name__ == "__main__":
-    file_path = "issuu_cw2.json"
-    doc_id = "140227140914-9ebad8b641c3754defdd0aa4bdd3aa09"
-    visitor_id = "6262b769706ad29d"
-    run_task_6(file_path, doc_id, visitor_id)
+# if __name__ == "__main__":
+#     file_path = "issuu_cw2.json"
+#     doc_id = "140227140914-9ebad8b641c3754defdd0aa4bdd3aa09"
+#     visitor_id = "6262b769706ad29d"
+#     run_task_6(file_path, doc_id, visitor_id)
