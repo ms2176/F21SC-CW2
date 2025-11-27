@@ -14,6 +14,7 @@ class AnalyticsGUI:
         self.root.title("F21SC CW2 Analytics")
 
         self.data_file = None
+        self.task_buttons = []  
 
         # --- Top controls: file + IDs ---
         top_frame = tk.Frame(root, padx=10, pady=10)
@@ -48,12 +49,15 @@ class AnalyticsGUI:
         }
 
         for idx, task_name in enumerate(self.task_map.keys()):
-            tk.Button(
+            btn = tk.Button(
                 task_frame,
                 text=task_name,
                 width=20,
-                command=lambda t=task_name: self.run_task(t)
-            ).grid(row=1, column=idx, padx=5)
+                command=lambda t=task_name: self.run_task(t),
+                state=tk.DISABLED
+            )
+            btn.grid(row=1, column=idx, padx=5)
+            self.task_buttons.append(btn)
 
         # --- Output area ---
         output_frame = tk.Frame(root, padx=10, pady=10)
@@ -89,6 +93,8 @@ class AnalyticsGUI:
         )
         if path:
             self.data_file = path
+            for btn in self.task_buttons:
+                btn.configure(state=tk.NORMAL)
             messagebox.showinfo("File loaded", f"Using data file:\n{path}")
 
     def require_document_id(self) -> str:
@@ -106,6 +112,9 @@ class AnalyticsGUI:
         return user
 
     def require_data_file(self) -> str:
+        if self.data_file is None:                             
+            messagebox.showerror("No file loaded", "Please load a data file first.")
+            raise FileNotFoundError("No data file loaded")
         if not os.path.exists(self.data_file):
             messagebox.showerror(
                 "Data file not found",
